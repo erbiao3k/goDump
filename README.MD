@@ -63,3 +63,5 @@ kubectl apply -f pod-operations-clusterrolebinding.yaml -n appna #替换成实�
 - `NAMESPACE`: 命名空间，多个用英文逗号隔开
 - `DOWNLOAD_HOST`: dump数据下载地址
 - `WECOM_ROBOT_ADDR`: 企业微信机器人地址, 多个用英文逗号隔开
+
+#### 示例数据
