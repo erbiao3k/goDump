@@ -52,7 +52,7 @@ EOF
 ##### 发布到集群
 ```bash
 kubectl apply -f pod-operations-clusterrole.yaml
-kubectl apply -f serviceaccount.yaml
+kubectl apply -f serviceaccount.yaml -n appna #替换成实际的命名空间
 kubectl apply -f pod-operations-clusterrolebinding.yaml -n appna #替换成实际的命名空间
 ```
 
