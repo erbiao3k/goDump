@@ -1,2 +1,0 @@
-# goDump
-基于arthas实现的kubernetes环境下应用资源异常自动dump内存数据和繁忙线程，便于研发和运维排查异常问题。
