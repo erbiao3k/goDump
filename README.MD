@@ -65,3 +65,4 @@ kubectl apply -f pod-operations-clusterrolebinding.yaml -n appna #替换成实�
 - `WECOM_ROBOT_ADDR`: 企业微信机器人地址, 多个用英文逗号隔开
 
 #### 示例数据
+![example.png](./example.png "example.png")
