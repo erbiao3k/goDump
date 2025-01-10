@@ -1,11 +1,8 @@
 package config
 
 import (
-	"context"
-	"github.com/allegro/bigcache/v3"
 	"os"
 	"strings"
-	"time"
 )
 
 type CheckPod struct {
@@ -23,6 +20,17 @@ var (
 	CheckPodList   []CheckPod
 )
 
+var (
+	MemoryCpuCmd = `pidof java >> /dev/null && rm -rf /tmp/goDump && mkdir /tmp/goDump && curl -sS -O https://arthas.aliyun.com/arthas-boot.jar && java -jar arthas-boot.jar -c 'jvm > /tmp/goDump/jvm-info.log;thread -b > /tmp/goDump/blocking-thread.log;thread -n 5 > /tmp/goDump/busy-thread.log;heapdump /tmp/goDump/memory-dump.hprof;stop' -v $(pidof java) && tar -zcf /tmp/$HOSTNAME-jvm-dump.tar.gz /tmp/goDump/ && curl -X POST -F "upload[]=@/tmp/$HOSTNAME-jvm-dump.tar.gz" http://%s:12399/upload && rm -rf /tmp/$HOSTNAME-jvm-dump.tar.gz /tmp/goDump`
+	CpuCmd       = `pidof java >> /dev/null && rm -rf /tmp/goDump && mkdir /tmp/goDump && curl -sS -O https://arthas.aliyun.com/arthas-boot.jar && java -jar arthas-boot.jar -c 'jvm > /tmp/goDump/jvm-info.log;thread -b > /tmp/goDump/blocking-thread.log;thread -n 5 > /tmp/goDump/busy-thread.log;stop' -v $(pidof java) && tar -zcf /tmp/$HOSTNAME-jvm-dump.tar.gz /tmp/goDump/ && curl -X POST -F "upload[]=@/tmp/$HOSTNAME-jvm-dump.tar.gz" http://%s:12399/upload && rm -rf /tmp/$HOSTNAME-jvm-dump.tar.gz /tmp/goDump`
+)
+
+const (
+	SlsAddr     = "https://sls.console.aliyun.com/lognext/project/"
+	MonitorAddr = "https://csnew.console.aliyun.com/#/next/clusters/"
+	K8sAddr     = "https://csnew.console.aliyun.com/#/k8s/cluster/"
+)
+
 func init() {
 	if _, err := os.Stat(ShareDir); os.IsNotExist(err) {
 		err := os.MkdirAll(ShareDir, 0755)
@@ -30,20 +38,4 @@ func init() {
 			panic("Failed to create directory: " + err.Error())
 		}
 	}
-}
-
-var TimedCache = func() *bigcache.BigCache {
-	cache, err := bigcache.New(context.Background(), bigcache.Config{Shards: 2, LifeWindow: 24 * time.Hour, CleanWindow: 3 * time.Second})
-	if err != nil {
-		panic("初始化定时任务内存缓存失败：" + err.Error())
-	}
-	return cache
-}
-
-var WebCache = func() *bigcache.BigCache {
-	cache, err := bigcache.New(context.Background(), bigcache.Config{Shards: 2, LifeWindow: 10 * time.Minute, CleanWindow: 3 * time.Second})
-	if err != nil {
-		panic("初始化定时任务内存缓存失败：" + err.Error())
-	}
-	return cache
 }
